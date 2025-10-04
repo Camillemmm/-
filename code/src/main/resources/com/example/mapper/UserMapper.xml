@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.UserMapper">
+    <!--id值与UserMapper接口中方法名对应一致-->
+    <select id="findAll" resultType="com.example.pojo.User">
+        select id, username, password, name, age, updatetime from user
+    </select>
+
+    <delete id="deletebyIds">
+        delete from user where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="insertinfo" parameterType="com.example.pojo.User" useGeneratedKeys="true" keyProperty="id">
+        insert into user (username, password, name, age,  updatetime) values(#{username},#{password},#{name},#{age},#{updateTime})
+    </insert>
+
+    <select id="getById" resultType="com.example.pojo.User">
+        select * from user where id=#{id};
+    </select>
+    <select id="searchUsers" resultType="com.example.pojo.User">
+        SELECT * FROM user
+        <where>
+            <if test="keyword != null and keyword != ''">
+                (username LIKE CONCAT('%', #{keyword}, '%')
+                OR name LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        LIMIT #{offset}, #{pagesize}
+    </select>
+    <select id="selectByusername" resultType="com.example.pojo.User">
+        select * from user where username=#{username};
+    </select>
+
+    <update id="update" parameterType="com.example.pojo.User">
+        UPDATE user
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+            <if test="updateTime != null">
+                updatetime = #{updateTime},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    <!-- 修改密码 -->
+    <update id="changePassword">
+        update user set password = #{newPassword}, updatetime = now()
+        where id = #{userId}
+    </update>
+
+    <!-- 批量插入用户 -->
+    <insert id="batchInsert" parameterType="java.util.List">
+        INSERT INTO user (username, password, name, age, updatetime)
+        VALUES
+        <foreach collection="list" item="user" separator=",">
+            (#{user.username}, #{user.password}, #{user.name}, #{user.age}, #{user.updateTime})
+        </foreach>
+    </insert>
+
+</mapper>

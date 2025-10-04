@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: project02
+
+  datasource:
+    url: jdbc:mysql://182.92.133.114:3306/web
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 12345678
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
+
+
+mybatis:
+  #mapper-locations: classpath*:com/example/mapper/**/*.xml
+  #type-aliases-package: com.example.pojo
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+
+
+logging:
+  level:
+    org.springframework.jdbc.support.JdbcTransactionManager: debug
+
